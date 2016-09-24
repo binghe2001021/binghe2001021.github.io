@@ -1,16 +1,15 @@
 # Site settings
-title: HyG
-email: gaohaoyang126@126.com
-description: Êµ©Èò≥ÁöÑÂçöÂÆ¢ ÂâçÁ´ØÁà±Â•ΩËÄÖ
-# > # this means to ignore newlines until "baseurl:"
+title: SKJ's Blog
+email: binghe2001021@163.com
+description: À˘ŒΩ¥˙¬Î£¨æÕ «“ª∆¨Œﬁ€Ûªƒ“∞> # this means to ignore newlines until "baseurl:"
 #   Write an awesome description for your new site here. You can edit this
 #   line in _config.yml. It will appear in your document head meta (for
 #   Google search results) and in your feed.xml site description.
 
 # baseurl: "" # the subpath of your site, e.g. /blog/
 # url: "http://yourdomain.com" # the base hostname & protocol for your site
-# twitter_username: jekyllrb
-github_username:  Gaohaoyang
+# weibo_username: _∆ø÷––°»À
+github_username:  binghe2001021
 permalink: /:year/:month/:day/:title/
 
 # Build settings
