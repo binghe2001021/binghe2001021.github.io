@@ -3,50 +3,16 @@
 
   {% include head.html %}
 
- <!--  <body data-spy="scroll" data-target="#myAffix"> -->
   <body>
 
     {% include header.html %}
 
-
-    <div id="main" class="container main">
-      {{ content }}
-    </div>
-
-    
-    <div id="top" data-toggle="tooltip" data-placement="left" title="回到顶部">
-      <a href="javascript:;">
-        <div class="arrow"></div>
-        <div class="stick"></div>
-      </a>
-    </div>
+        {{ content }}
 
     {% include footer.html %}
-
-
-    <!-- 多说公共JS代码 start (一个网页只需插入一�? -->
-  <script type="text/javascript">
-    var duoshuoQuery = {short_name:"skjblog"};
-    (function() {
-      var ds = document.createElement('script');
-      ds.type = 'text/javascript';ds.async = true;
-      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-      ds.charset = 'UTF-8';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-  </script>
-<!-- 多说公共JS代码 end -->
-
-<!-- 在新窗口中打开 -->
-  <script type="text/javascript">
-    function addBlankTargetForLinks () {
-      $('a[href^="http"]').each(function(){
-          $(this).attr('target', '_blank');
-      });
-    }
-    $(document).bind('DOMNodeInserted', function(event) {
-      addBlankTargetForLinks();
-    });
-  </script>
+    {% include backToTop.html %}
+    <script src="{{ " /js/main.js " | prepend: site.baseurl }}" charset="utf-8"></script>
+    <script src="{{ " /js/scroll.min.js " | prepend: site.baseurl }}" charset="utf-8"></script>
   </body>
+
 </html>
