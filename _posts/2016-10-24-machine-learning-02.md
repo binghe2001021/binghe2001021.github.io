@@ -4,8 +4,17 @@ title:  "机器学习 第二周"
 date:   2016-10-24 00:28:54
 categories: machine-learning
 tags: Stanford AndrewNG
-excerpt: 第二周主要讲了多元线性回归，以及求最优解的另一个思路——正规方程法。
 ---
+
+* content
+{:toc}
+
+第二周主要讲了多元线性回归，以及求最优解的另一个思路——正规方程法。
+
+
+
+
+
 
 ## 环境搭建
 

@@ -4,8 +4,17 @@ title:  "机器学习 第三周"
 date:   2016-10-24 00:30:54
 categories: machine-learning
 tags: Stanford AndrewNG
-excerpt: 第三周转而研究另一类监督式机器学习算法——分类问题。
 ---
+
+* content
+{:toc}
+
+第三周转而研究另一类监督式机器学习算法——分类问题。
+
+
+
+
+
 
 ## 分类问题与逻辑回归
 
