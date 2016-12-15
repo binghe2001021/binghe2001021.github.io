@@ -41,6 +41,7 @@ def fetch(url):
 ## 异步
 
 异步的I/O框架要求非阻塞的socket：
+
 ```
 sock = socket.socket()
 sock.setblocking(False)
@@ -49,7 +50,9 @@ try:
 except BlockingIOError:
     pass
 ```
+
 接下来我们可以通过发http请求来确认连接已建立：
+
 ```
 request = 'GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n'.format(url)
 encoded = request.encode('ascii')
@@ -84,7 +87,9 @@ def connected():
 
 selector.register(sock.fileno(), EVENT_WRITE, connected)
 ```
+
 **我们在一个循环里处理I/O notifications**，其实这里我有点不理解，先跟着走吧：
+
 ```
 def loop():
     while True:
