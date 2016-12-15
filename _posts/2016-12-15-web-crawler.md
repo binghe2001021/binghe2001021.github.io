@@ -1,19 +1,15 @@
-﻿---
+---
 layout: post
-title:  "机器学习 第三周"
-date:   2016-10-24 00:06:05
-categories: machine-learning
-tags: Stanford AndrewNG
+title:  "a web crawler use asyncio"
+date:   2016-12-15 18:21:05
+categories: web-programming
+tags: Python socket 500lines
 ---
 
 * content
 {:toc}
 
-github.com/aosabook/500lines
-
-
-
-
+https://github.com/aosabook/500lines
 
 
 
@@ -53,7 +49,6 @@ try:
 except BlockingIOError:
     pass
 ```
-
 接下来我们可以通过发http请求来确认连接已建立：
 ```
 request = 'GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n'.format(url)
@@ -89,7 +84,6 @@ def connected():
 
 selector.register(sock.fileno(), EVENT_WRITE, connected)
 ```
-
 **我们在一个循环里处理I/O notifications**，其实这里我有点不理解，先跟着走吧：
 ```
 def loop():
