@@ -12,6 +12,12 @@ tags: Python Crawler 500lines
 github.com/aosabook/500lines
 
 
+
+
+
+
+
+
 ## 前言
 
 这个项目来自于github上“500 lines or less”系列，是一个小型开源项目的合集，在同步出版的书《The Architecture of Open Source Applications》上可以看到对这些项目详细的分析，在线阅读该书的地址在[这里](http://aosabook.org/en/index.html)。
