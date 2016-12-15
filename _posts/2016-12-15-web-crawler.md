@@ -1,9 +1,9 @@
 ﻿---
 layout: post
-title:  "一个利用python asyncio模块实现的网络爬虫"
-date:   2016-12-15 17:42:54
-categories: web-programming
-tags: Python Crawler 500lines
+title:  "机器学习 第三周"
+date:   2016-10-24 00:06:05
+categories: machine-learning
+tags: Stanford AndrewNG
 ---
 
 * content
