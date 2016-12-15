@@ -21,7 +21,7 @@ https://github.com/aosabook/500lines
 这个名叫crawler的项目实现了一个简单的网络爬虫，传统的计算机程序总是专注于优化算法复杂度，但是网络编程时，消耗时间的往往不是计算，而是保持多个缓慢、而频率又不高的连接……在这类程序中我们要面对的挑战是：**高效的等待并处理大量的网络请求**。如果对每个请求都开一个线程去处理，则资源很快会被耗尽，这里crawler用了异步的I/O来解决。
 
 ## 传统方法
-```
+```python
 def fetch(url):
     sock = socket.socket()
     sock.connect(('xkcd.com', 80))
@@ -42,7 +42,7 @@ def fetch(url):
 
 异步的I/O框架要求非阻塞的socket：
 
-```
+```python
 sock = socket.socket()
 sock.setblocking(False)
 try:
@@ -53,7 +53,7 @@ except BlockingIOError:
 
 接下来我们可以通过发http请求来确认连接已建立：
 
-```
+```python
 request = 'GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n'.format(url)
 encoded = request.encode('ascii')
 
@@ -69,7 +69,7 @@ print('sent')
 
 这种方法本身很直观，但是在应对多个socket通信时效率很低，BSD Unix中使用一个叫select的C函数来解决这个问题，目前也不知道是怎么实现的……不过可以先用着。Python的DefaultSelector库中对此有支持，其中connected函数是回调函数，传入的EVENT_WRITE函数表示：我们想知道**这个socket什么时候能够写**，connected定义了这个时刻出现时的行为。
 
-```
+```python
 from selectors import DefaultSelector, EVENT_WRITE
 
 selector = DefaultSelector()
@@ -99,7 +99,7 @@ def loop():
             callback()
 ```
 
-好了，到这里可以稍微做个总结（总算来了-_-|||）
+好了，到这里可以稍微做个总结
 
 > 以上这些主要说明了什么呢——一个异步框架就建立在**非阻塞的socket**和**event循环**里——这样子就实现了在单个thread里并行的处理事件。这里指的并不是严格意义上的同步计算，而是做I/O层面的overlapping。
 
