@@ -107,7 +107,7 @@ def loop():
 
 ## Programming With Callbacks
 
-在上一篇blog中，我们介绍了如何搭建一个异步框架，接下来为了实现这个爬虫还需要几个步骤。
+之前，我们介绍了如何搭建一个异步框架，接下来为了实现这个爬虫还需要几个步骤。
 首先是一个`URL-Fetcher`，它由一个URL，一个socket对象，和一个存储信息的数据块组成：
 
 ```python
