@@ -104,3 +104,89 @@ def loop():
 > 以上这些主要说明了什么呢——一个异步框架就建立在**非阻塞的socket**和**event循环**里——这样子就实现了在单个thread里并行的处理事件。这里指的并不是严格意义上的同步计算，而是做I/O层面的overlapping。
 
 以上这段来自我个人的拙劣翻译，目前我对此的理解很有限，姑且先粗略的认知为**流水线作业**，在上一个任务进入下一阶段时，紧接着启动下一个任务。好吧总之这样做的目的在于优化之前提到的thread瓶颈，因为自己对多线程编程其实很不熟悉，对于优化的方向和瓶颈的理解都很模糊，所以也希望能在学习这个项目的过程中能有所成长吧╮(￣▽￣")╭。
+
+## Programming With Callbacks
+
+在上一篇blog中，我们介绍了如何搭建一个异步框架，接下来为了实现这个爬虫还需要几个步骤。
+首先是一个`URL-Fetcher`，它由一个URL，一个socket对象，和一个存储信息的数据块组成：
+
+```python
+class Fetcher:
+    def __init__(self, url):
+        self.response = b''  # Empty array of bytes.
+        self.url = url
+        self.sock = None
+```
+
+`Fetcher.fetch`方法的实现如下：
+
+```python
+# Method on Fetcher class.
+    def fetch(self):
+        self.sock = socket.socket()
+        self.sock.setblocking(False)
+        try:
+            self.sock.connect(('xkcd.com', 80))
+        except BlockingIOError:
+            pass
+
+        # Register next callback.
+        selector.register(self.sock.fileno(),
+                          EVENT_WRITE,
+                          self.connected)
+```
+
+值得注意的一点是`fetch`方法在socket确立连接前就退出了，为什么？书上给出的解释是它将控制权交还给了主循环，一切的event通知都在主循环的`select`方法中产生，如此才能让程序及时发现socket连接并调用回调函数`connected`，它就在`fetch`的末尾被注册。
+
+这里又重新给出了`connected`的实现：
+```python
+# Method on Fetcher class.
+    def connected(self, key, mask):
+        print('connected!')
+        selector.unregister(key.fd)
+        request = 'GET {} HTTP/1.0\r\nHost: xkcd.com\r\n\r\n'.format(self.url)
+        self.sock.send(request.encode('ascii'))
+
+        # Register the next callback.
+        selector.register(key.fd,
+                          EVENT_READ,
+                          self.read_response)
+```
+
+好吧此时又出现了个回调函数`read_response`，他的作用是什么？上面提到`connected`在确认连接后发出了get请求，然后这里的作用就是处理服务器的返回消息——通过观察`register`方法中的`EVENT_READ`参数可以明白，这个回调函数在socket可读时生效：
+
+```python
+# Method on Fetcher class.
+    def read_response(self, key, mask):
+        global stopped
+
+        chunk = self.sock.recv(4096)  # 4k chunk size.
+        if chunk:
+            self.response += chunk
+        else:
+            selector.unregister(key.fd)  # Done reading.
+            links = self.parse_links()
+
+            # Python set-logic:
+            for link in links.difference(seen_urls):
+                urls_todo.add(link)
+                Fetcher(link).fetch()  # <- New Fetcher.
+
+            seen_urls.update(links)
+            urls_todo.remove(self.url)
+            if not urls_todo:
+                stopped = True
+```
+
+原理也很简单，每次从缓冲区中取出4k的数据进行处理，若`chunk`为空则说明消息全部处理完，此时执行`unregister`方法并且将获得的url加入队列，用新的`Fetcher`去拓展它们，从而实现爬虫的效果，全局变量`stopped`用来控制全局爬虫的终止。
+
+这个例子说明了异步程序面对的主要问题：我们需要传递一系列的指令和计算，然后有计划的让它们各个执行。然而不使用线程的话，一系列的操作无法被一个函数处理。
+
+> 一个函数在开始I/O操作时，需要显式的保存未来出现的任何状态，你需要思考如何撰写这样的代码。
+
+我的理解是，同步做这些操作的话，单个函数不可能为每一个都记录对应的内存状态。
+
+目前来看需要保存的状态有：URL，socket，数据块，如果是利用`thread`来编程，语言特性会保证能够自动将它们保存在栈上，并且将函数返回后执行的指令地址也压栈，因此我们就完全不需要考虑存储信息的问题。但是现在按照我们的做法，我们是利用数据结构存下了前者，并利用回调函数实现后者。这样一来的问题是，程序的可拓展性较差，若添了一些新的功能，程序会变的过于繁琐。另外很关键的一点在于，`callback`方法在处理Exception时很麻烦，我们很难定位出错的点，哪怕是想要设置一个handler去处理Exception也不能。
+
+> multithreading饱受data race的困扰，而callbacks则不利于debug。
+
