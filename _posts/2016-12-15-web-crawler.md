@@ -139,6 +139,7 @@ class Fetcher:
 值得注意的一点是`fetch`方法在socket确立连接前就退出了，为什么？书上给出的解释是它将控制权交还给了主循环，一切的event通知都在主循环的`select`方法中产生，如此才能让程序及时发现socket连接并调用回调函数`connected`，它就在`fetch`的末尾被注册。
 
 这里又重新给出了`connected`的实现：
+
 ```python
 # Method on Fetcher class.
     def connected(self, key, mask):
